@@ -4,12 +4,12 @@ import numpy as np
 #====================================================================================
 #   Calculates the absolute difference between the gradient of 2 input images.
 #
-#   Args:
-#       bitmap1: The Infrared image (as a 2D NumPy array, e.g., loaded grayscale).
-#       bitmap2: The Ultraviolet image (as a 2D NumPy array, e.g., loaded grayscale).
+#   Inputs:
+#       bitmap1: The Infrared image (as a 2D array).
+#       bitmap2: The Ultraviolet image.
 #
-#   Returns:
-#       A 2D NumPy array representing the differential dynamics image (I_DIFF).
+#   Output:
+#       A 2D NumPy array representing the differential dynamics image (a numpy array).
 #====================================================================================
 
 def gradient_difference(bitmap1: np.ndarray, bitmap2: np.ndarray) -> np.ndarray:

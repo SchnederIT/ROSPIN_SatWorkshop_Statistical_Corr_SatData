@@ -1,7 +1,7 @@
 if __name__ == '__main__':
     
-    from grad_analysis import gradient_difference
     import cv2
+    from grad_analysis import gradient_difference
 
     try:
         # Load images as grayscale (0 flag)

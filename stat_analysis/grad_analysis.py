@@ -42,7 +42,6 @@ def gradient_difference(bitmap1: np.ndarray, bitmap2: np.ndarray) -> np.ndarray:
     return np.uint8(gradient_difference_normalized)
 
 #====================================================================================
-
 if __name__ == '__main__':
     # a dummy test
     from dummy_bitmaps import X, Y

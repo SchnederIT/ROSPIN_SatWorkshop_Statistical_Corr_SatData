@@ -1,6 +1,5 @@
 def SATCORR_im_get( oauth, type, bound_box, dimensions, time_begin, time_end, max_cc, input_bands, output_band_count, output_type, sample_manip ):
     
-
     input_str = "["
     for bnd in input_bands:
         input_str += f"\"{bnd}\","

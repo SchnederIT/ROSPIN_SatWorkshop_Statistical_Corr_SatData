@@ -36,11 +36,11 @@ def gradient_difference(bitmap1: np.ndarray, bitmap2: np.ndarray) -> np.ndarray:
         gradient_difference, 
         None, 
         0, 
-        2**8 - 1, # normalize to values in range [0 .. 2^bitNum - 1]
+        2**16 - 1, # normalize to values in range [0 .. 2^bitNum - 1]
         cv2.NORM_MINMAX
     )
     
-    return np.uint8(gradient_difference_normalized)
+    return np.uint16(gradient_difference_normalized)
 
 #====================================================================================
 

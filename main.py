@@ -6,7 +6,7 @@ from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 # User includes
 from bitmap_plot.mapplot import plot_matrix_color_scale
-from stat_analysis.grad_analysis import gradient_difference
+from stat_analysis.grad_analysis import gradient_difference, calculate_spatial_correlation
 from satellite_conf.SATCORR_im_get import SATCORR_im_get
 import satellite_conf.SAT_specs as specs  # Import satellite payloads configuration file
 #---------------------------------------------------
@@ -53,22 +53,28 @@ def get_spectrum_img(oauth, band_spec_dict):
 if __name__ == '__main__':
     IR_matrix = get_spectrum_img(oauth, specs.B11_SPEC)
     UV_matrix = get_spectrum_img(oauth, specs.B01_SPEC)
-    Red_matrix = get_spectrum_img(oauth, specs.B04_SPEC)
+    # Red_matrix = get_spectrum_img(oauth, specs.B04_SPEC)
 
     if IR_matrix.size > 0 and UV_matrix.size > 0:
         Result1 = gradient_difference(IR_matrix, UV_matrix)
-        Result2 = gradient_difference(IR_matrix, Red_matrix)
-        Result3 = gradient_difference(UV_matrix, Red_matrix)
+        # Result2 = gradient_difference(IR_matrix, Red_matrix)
+        # Result3 = gradient_difference(UV_matrix, Red_matrix)
+
+        # Result1 = (Result1 / Result1.max(Result1)) ** 0.5
+        Result1 = Result1 ** 0.6
 
         plot_matrix_color_scale(IR_matrix, "IR", 'inferno')
         plot_matrix_color_scale(UV_matrix, "UV", 'inferno')
-        plot_matrix_color_scale(Red_matrix, "Red (vegetation)", 'inferno')
+        # plot_matrix_color_scale(Red_matrix, "Red (vegetation)", 'inferno')
 
+        # plot_matrix_color_scale(Result1, f" UV-IR mean={Result1.mean():.2f}", 'inferno')
+        # plot_matrix_color_scale(Result2, f"Red-IR mean={Result2.mean():.2f}", 'inferno')
+        # plot_matrix_color_scale(Result3, f"UV-Red mean={Result3.mean():.2f}", 'inferno')
 
-        plot_matrix_color_scale(Result1, f" UV-IR mean={Result1.mean():.2f}", 'inferno')
-        plot_matrix_color_scale(Result2, f"Red-IR mean={Result2.mean():.2f}", 'inferno')
-        plot_matrix_color_scale(Result3, f"UV-Red mean={Result3.mean():.2f}", 'inferno')
+        plot_matrix_color_scale(Result1, f" UV-IR mean={calculate_spatial_correlation(IR_matrix, UV_matrix):.2f}", 'inferno')
 
+        print(f"integral mean = {Result1.mean():.2f}")
+        print(f"correlation coeff = {calculate_spatial_correlation(IR_matrix, UV_matrix):.2f}")
         plt.show()
         
     else:

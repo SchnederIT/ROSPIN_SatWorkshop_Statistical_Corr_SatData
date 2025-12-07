@@ -1,7 +1,7 @@
 import numpy as np
 
 L = 500
-noise_intensity = 30
+noise_intensity = 10
 
 def generate_dummy_bitmaps(L: int):
 
@@ -20,12 +20,13 @@ def generate_dummy_bitmaps(L: int):
     Y = (np.cos(0.75 * distance_r * 20) * 0.5 + 0.5) * 255
     
     # --- Matrix Z: Linear Gradient + High-Frequency Noise ---
-    Z = X.copy()
-    noise = np.random.normal(0, noise_intensity, size=(L, L))
-    Z += noise
+    # Z = X.copy()
+    # noise = np.random.normal(0, noise_intensity, size=(L, L))
+    # Z += noise
     
-    # Z = 250 - (x_coords + y_coords) * (255 / 2) # X in inverse direction 
-
+    Z = 250 - (x_coords + y_coords) * (255 / 2) # X in inverse direction with noise
+    Z += np.random.normal(0, noise_intensity, size=(L, L))
+    
     X = np.clip(X, 0, 255)
     Y = np.clip(Y, 0, 255)
     Z = np.clip(Z, 0, 255)

@@ -9,7 +9,6 @@ import numpy as np
 #   Output:
 #       A 2D NumPy array representing the differential dynamics image (a numpy array).
 #====================================================================================
-
 def gradient_difference(bitmap1: np.ndarray, bitmap2: np.ndarray) -> np.ndarray:
 
     if not isinstance(bitmap1, np.ndarray) or not isinstance(bitmap2, np.ndarray):
@@ -36,14 +35,63 @@ def gradient_difference(bitmap1: np.ndarray, bitmap2: np.ndarray) -> np.ndarray:
         gradient_difference, 
         None, 
         0, 
-        2**16 - 1, # normalize to values in range [0 .. 2^bitNum - 1]
+        1, # normalize to values in range [0 .. 1]
         cv2.NORM_MINMAX
     )
     
-    return np.uint16(gradient_difference_normalized)
+    return np.float32(gradient_difference_normalized)
 
 #====================================================================================
+def calculate_spatial_correlation(bitmap_a: np.ndarray, bitmap_b: np.ndarray) -> float:
 
+    matrix_a = np.array(bitmap_a).astype(np.float64)
+    matrix_b = np.array(bitmap_b).astype(np.float64)
+    
+    if matrix_a.shape != matrix_b.shape:
+        raise ValueError("Input bitmaps must have the exact same dimensions for correlation.")
+        
+    # 2. Flatten the 2D arrays into 1D vectors
+    # Correlation functions work on vectors (series of measurements), so we treat
+    # each pixel location as one sample point.
+    vector_a = matrix_a.flatten()
+    vector_b = matrix_b.flatten()
+    
+    # 3. Calculate the Correlation Matrix (inline method)
+    # np.corrcoef(v1, v2) returns a 2x2 matrix:
+    # [[ corr(v1, v1), corr(v1, v2) ],
+    #  [ corr(v2, v1), corr(v2, v2) ]]
+    correlation_matrix = np.corrcoef(vector_a, vector_b)
+    
+    # 4. Extract the Pearson Correlation Coefficient (the off-diagonal element)
+    # The coefficient is located at index [0, 1] (or [1, 0]).
+    correlation_coefficient = correlation_matrix[0, 1]
+    
+    return correlation_coefficient
+#====================================================================================
+def create_ratio_map(bitmap_a: np.ndarray, bitmap_b: np.ndarray) -> np.ndarray:
+    A = np.array(bitmap_a).astype(np.float64)
+    B = np.array(bitmap_b).astype(np.float64)
+
+    # 1. Calculate the Ratio Index (similar to an EVI or simple ratio)
+    # The output values will range from 0 to 1 (or close to it)
+    # A small constant (epsilon) is added to the denominator to prevent division by zero.
+    epsilon = 1e-8
+    ratio_index = (A - B) / (A + B + epsilon) 
+
+    normalized_map = cv2.normalize(
+        ratio_index, 
+        None, 
+        0, 
+        255, 
+        cv2.NORM_MINMAX, 
+        cv2.CV_8U # Return as 8-bit unsigned integer (bitmap)
+    )
+    
+    # Regions that are visually similar will cluster around the central color of the map.
+    # Extreme colors show maximum local difference.
+    return normalized_map
+
+#====================================================================================
 if __name__ == '__main__':
 
     import matplotlib.pyplot as plt
@@ -63,19 +111,15 @@ if __name__ == '__main__':
     # a dummy test
     from dummy_bitmaps import X, Y, Z
 
-    # --- 1. Calculate Gradient Difference Results ---
-    XYintegral = gradient_difference(X, Y)
-    YZintegral = gradient_difference(Y, Z) # Ensure correct order if order matters
-    XZintegral = gradient_difference(X, Z)
+    #  1. Calculate Gradient Difference Results 
+    XYintegral = create_ratio_map(X, Y)
+    YZintegral = create_ratio_map(Y, Z) # Ensure correct order if order matters
+    XZintegral = create_ratio_map(X, Z)
 
-    # --- 2. Set up the 2x3 Figure and Axes ---
+    #  2. Set up the 2x3 Figure and Axes 
     fig, axes = plt.subplots(2, 3, figsize=(9, 6))
-    # 'axes' is now a 2D NumPy array of subplots: [[ax00, ax01, ax02], [ax10, ax11, ax12]]
 
-    # Flatten the axes array for easier iteration, or address them by index
-    # axes[row, column]
-    
-    # --- 3. Define the Data and Titles for Plotting ---
+    #  3. Define the Data and Titles for Plotting 
     plots = [
         (X, "X (Diagonal)"),
         (Y, "Y (Radial)"),
@@ -85,17 +129,14 @@ if __name__ == '__main__':
         (XZintegral, f"Diff XZ (Mean: {XZintegral.mean():.2f})"),
     ]
 
-    # --- 4. Loop through Data and Plot on Subplots ---
+    #  4. Loop through Data and Plot on Subplots 
     for i, (matrix, title) in enumerate(plots):
-        row = i // 3  # Integer division determines the row (0 or 1)
-        col = i % 3   # Modulo determines the column (0, 1, or 2)
+        row = i // 3  
+        col = i % 3
         ax = axes[row, col] # Select the current subplot axis
         
-        # Plot the matrix using the 'viridis' colormap
-        im = ax.imshow(matrix, cmap='viridis', origin='lower') # 'origin=lower' for standard math plots
-        
-        # Add the color bar specifically for this subplot
-        # We create an instance of the colorbar next to the current axis (ax)
+        im = ax.imshow(matrix, cmap='viridis', origin='lower')
+
         plt.colorbar(im, ax=ax, label='Intensity / Differential Value', fraction=0.046, pad=0.04)
         
         # Set titles and labels
@@ -103,8 +144,5 @@ if __name__ == '__main__':
         ax.set_xlabel("x (Column)")
         ax.set_ylabel("y (Row)")
 
-    # Adjust layout to prevent plot titles and labels from overlapping
     plt.tight_layout()
-    
-    # Display the single figure containing all 6 plots
     plt.show()

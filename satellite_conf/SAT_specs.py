@@ -1,7 +1,8 @@
 # --- Common Parameters (Do not change per band) ---
 COMMON_PARAMS = {
     "type": "sentinel-2-l2a", 
-    "bound_box": [23.474350, 46.677239, 23.716736, 46.830603], 
+    # "bound_box": [23.474350, 46.677239, 23.716736, 46.830603],\
+    "bound_box" : [ -81.7729-0.5, 33.13001+0.5, -81.7729+0.5, 33.13001-0.5 ], 
     "dimensions": [2500, 2500],
     "time_begin": "2025-10-01T00:00:00Z",
     "time_end": "2025-10-30T00:00:00Z",

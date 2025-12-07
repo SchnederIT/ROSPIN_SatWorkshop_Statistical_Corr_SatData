@@ -36,7 +36,7 @@ def gradient_difference(bitmap1: np.ndarray, bitmap2: np.ndarray) -> np.ndarray:
         gradient_difference, 
         None, 
         0, 
-        255, # normalize to values in range [0 .. 255]
+        2**8 - 1, # normalize to values in range [0 .. 2^bitNum - 1]
         cv2.NORM_MINMAX
     )
     
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     plots = [
         (X, "X (Diagonal)"),
         (Y, "Y (Radial)"),
-        (Z, "Z (Noisy)"),
+        (Z, "Z"),
         (XYintegral, f"Diff XY (Mean: {XYintegral.mean():.2f})"),
         (YZintegral, f"Diff YZ (Mean: {YZintegral.mean():.2f})"),
         (XZintegral, f"Diff XZ (Mean: {XZintegral.mean():.2f})"),

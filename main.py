@@ -56,12 +56,18 @@ if __name__ == '__main__':
     Red_matrix = get_spectrum_img(oauth, specs.B04_SPEC)
 
     if IR_matrix.size > 0 and UV_matrix.size > 0:
-        Result = gradient_difference(IR_matrix, UV_matrix)
-        
-        plot_matrix_color_scale(IR_matrix, "IR")
-        plot_matrix_color_scale(UV_matrix, "UV")
+        Result1 = gradient_difference(IR_matrix, UV_matrix)
+        Result2 = gradient_difference(IR_matrix, Red_matrix)
+        Result3 = gradient_difference(UV_matrix, Red_matrix)
 
-        plot_matrix_color_scale(Result, f"UV - IR correlation mean={Result.mean()}")
+        plot_matrix_color_scale(IR_matrix, "IR", 'inferno')
+        plot_matrix_color_scale(UV_matrix, "UV", 'inferno')
+        plot_matrix_color_scale(Red_matrix, "Red (vegetation)", 'inferno')
+
+
+        plot_matrix_color_scale(Result1, f" UV-IR mean={Result1.mean():.2f}", 'inferno')
+        plot_matrix_color_scale(Result2, f"Red-IR mean={Result2.mean():.2f}", 'inferno')
+        plot_matrix_color_scale(Result3, f"UV-Red mean={Result3.mean():.2f}", 'inferno')
 
         plt.show()
         

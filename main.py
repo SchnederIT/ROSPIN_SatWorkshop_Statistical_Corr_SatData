@@ -55,9 +55,7 @@ if __name__ == '__main__':
     UV_matrix = get_spectrum_img(oauth, specs.B01_SPEC)
     Red_matrix = get_spectrum_img(oauth, specs.B04_SPEC)
 
-    # Check if data was successfully returned before processing gradients
     if IR_matrix.size > 0 and UV_matrix.size > 0:
-        # Now pass the clean 2D arrays to your gradient function
         Result = gradient_difference(IR_matrix, UV_matrix)
         
         plot_matrix_color_scale(IR_matrix, "IR")

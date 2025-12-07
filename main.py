@@ -61,7 +61,7 @@ if __name__ == '__main__':
         plot_matrix_color_scale(IR_matrix, "IR")
         plot_matrix_color_scale(UV_matrix, "UV")
 
-        plot_matrix_color_scale(Result, "UV - IR correlation")
+        plot_matrix_color_scale(Result, f"UV - IR correlation mean={Result.mean()}")
 
         plt.show()
         

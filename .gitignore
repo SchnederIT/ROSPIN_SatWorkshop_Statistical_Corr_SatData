@@ -208,3 +208,5 @@ __marimo__/
 
 api_creds.txt
 *.txt
+
+*/__init__.py

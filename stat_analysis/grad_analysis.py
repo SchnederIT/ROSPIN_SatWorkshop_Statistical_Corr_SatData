@@ -86,9 +86,6 @@ def create_ratio_map(bitmap_a: np.ndarray, bitmap_b: np.ndarray) -> np.ndarray:
         cv2.NORM_MINMAX, 
         cv2.CV_8U # Return as 8-bit unsigned integer (bitmap)
     )
-    
-    # Regions that are visually similar will cluster around the central color of the map.
-    # Extreme colors show maximum local difference.
     return normalized_map
 
 #====================================================================================

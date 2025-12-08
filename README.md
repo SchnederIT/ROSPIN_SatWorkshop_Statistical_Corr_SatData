@@ -1,5 +1,5 @@
 # Statistical Correlation Study
-**Authors:** Crivcianschi A., Moise C., Vâtcă T.-H.; dec. 2025
+**Authors:** Crivcianschi A., Moisă C., Vâtcă T.-H.; dec. 2025
 
 ### Project Overview
 

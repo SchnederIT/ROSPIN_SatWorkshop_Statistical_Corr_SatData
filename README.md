@@ -82,11 +82,11 @@ $$\nabla z = \left( \frac{\partial z}{\partial x}, \frac{\partial z}{\partial y}
 * **Sobel Operator:** This function uses `cv2.Sobel()` to approximate the discrete partial derivatives ($\partial z / \partial x$ and $\partial z / \partial y$), which is a more robust method for edge detection than simple finite difference, particularly for noisy imagery.
 * **Gradient Magnitude:** The magnitude of the gradient ($M$) for each matrix is calculated using the Pythagorean theorem:
 
-    $$M = \sqrt{\left(\frac{\partial z}{\partial x}\right)^2 + \left(\frac{\partial z}{\partial y}\right)^2}$$
+$$M = \sqrt{\left(\frac{\partial z}{\partial x}\right)^2 + \left(\frac{\partial z}{\partial y}\right)^2}$$
 
 * **Differential Dynamics:** The final output is the absolute difference between the two gradient magnitudes, creating a bitmap where high values indicate regions where the spatial patterns diverge:
 
-    $$\mathbf{D}_{\text{diff}} = | M_{\mathbf{A}} - M_{\mathbf{B}} |$$
+$$\mathbf{D}_{\text{diff}} = | M_{\mathbf{A}} - M_{\mathbf{B}} |$$
 
 ### 3. Statistical Correlation
 
@@ -107,9 +107,9 @@ The code calculates this **discrete gradient** using a **finite difference metho
 1.  **Input:** The function takes a 2D NumPy array, `Z`, representing the $z$-values sampled across an $x$-$y$ grid.
 2.  **Finite Difference:** The partial derivatives are approximated by calculating the difference in $z$-values between adjacent grid points.
     * **At Interior Points:** The calculation uses **central differences** (averaging the forward and backward differences) for a more accurate approximation:
-        $$\frac{\partial z}{\partial x} \approx \frac{Z_{i, j+1} - Z_{i, j-1}}{2 \Delta x}$$
+    $$\frac{\partial z}{\partial x} \approx \frac{Z_{i, j+1} - Z_{i, j-1}}{2 \Delta x}$$
     * **At Boundary Points (Edges):** **Forward or backward differences** are used since central differencing is not possible:
-        $$\frac{\partial z}{\partial x} \approx \frac{Z_{i, j+1} - Z_{i, j}}{\Delta x} \quad \text{(Forward Difference)}$$
+    $$\frac{\partial z}{\partial x} \approx \frac{Z_{i, j+1} - Z_{i, j}}{\Delta x} \quad \text{(Forward Difference)}$$
 3.  **Calculation:** `numpy.gradient()` performs this calculation simultaneously along the two axes (rows and columns):
     * $\partial z / \partial (\text{rows})$ (derivative along axis 0, typically $\partial z / \partial y$)
     * $\partial z / \partial (\text{columns})$ (derivative along axis 1, typically $\partial z / \partial x$)

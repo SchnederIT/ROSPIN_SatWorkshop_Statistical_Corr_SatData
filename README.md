@@ -150,18 +150,68 @@ The primary `main.py` script applies the validated pipeline to Sentinel-2 L2A da
     * **IR (SWIR) Map:** Shows soil moisture and land cover, a proxy for ground heat properties.
     * **Differential Dynamics Map (Result\_Diff):** Highlights exact locations where the rate of spatial change in UV/Aerosols does not align with the rate of spatial change in IR/Moisture, providing key points for statistical correlation with ground sensor data.
 
-<h4 align="center">Verification Using Synthetic Matrices</h4>
 
+    ## Project Usage and Results
+
+The project's analytical capabilities are demonstrated using both synthetic and real-world satellite data.
+
+### A. Verification Using Synthetic Matrices
+
+To validate the core image processing and differential gradient logic, the framework processes three purposefully constructed synthetic matrices ($X$, $Y$, and $Z$).
+
+#### Test 1: Linear Combination (X, Y, and Z = X+Y)
+
+This test confirms that the differential gradient accurately isolates the complex pattern (Y) when compared to a smooth pattern (X).
+
+| Pair | Differential Mean Integral | Interpretation |
+| :--- | :--- | :--- |
+| **Diff XY** | 153.86 | The gradient difference perfectly recovers the radial pattern of Y, as the gradients are calculated simultaneously, showing near-perfect difference in magnitude outside the center. |
+| **Diff YZ** | 93.93 | The difference reflects the regions where the Z's (X+Y) combined radial gradient dominates over Y's pure radial gradient. |
+| **Diff XZ** | 77.99 | The difference shows areas where the radial pattern is lost due to the smooth X component being included in Z. |
+
+<h4 align="center">Test 1 Results: X, Y, and Z = X+Y</h4>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/SchnederIT/statistical_corr_on_sat_data/dev/results/Grad_Diff_test.png" 
-       alt="Synthetic Gradient Test: X, Y, Z Inputs and Diff XY, YZ, XZ Results" 
-       width="750"/>
+  <img src="Results/Grad_Diff_test.png" alt="Test 1: Synthetic Gradient Differences X, Y, Z=X+Y" width="900"/>
 </p>
 
-<h4 align="center">Verification Using Synthetic Matrices (Cleaned)</h4>
+#### Test 2: Inverse and Subtraction (X, Y, and Z = -X)
 
+This test confirms that the absolute difference calculation (`absdiff`) handles inverse correlations and expected zero-difference outcomes.
+
+| Pair | Differential Mean Integral | Interpretation |
+| :--- | :--- | :--- |
+| **Diff XY** | 153.86 | Identical to Test 1, as the differential gradient is an absolute measure, unaffected by the inverted Z matrix. |
+| **Diff YZ** | 153.45 | High difference, as the radial gradient (Y) is strongly opposed to the smooth inverted linear gradient (Z=-X). |
+| **Diff XZ** | 0.20 | **Near-Zero Difference.** This confirms the function works: since X and Z are perfect inverses (Z=-X), their *spatial gradient magnitudes* $|\nabla X|$ and $|\nabla Z|$ are almost identical, resulting in a near-zero difference (0.20 due to floating point error). |
+
+<h4 align="center">Test 2 Results: X, Y, and Z = -X</h4>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/SchnederIT/statistical_corr_on_sat_data/dev/results/Grad_Diff_test_2.png" 
-       alt="Cleaned Synthetic Gradient Test: X, Y, Z, Diff XY, YZ, XZ" 
-       width="750"/>
+  <img src="Results/Grad_Diff_test_2.png" alt="Test 2: Synthetic Gradient Differences X, Y, Z=-X" width="900"/>
+</p>
+
+---
+
+### B. Real-World Satellite Data Application
+
+The primary `main.py` script applies the validated pipeline to Sentinel-2 L2A data for the study area.
+
+#### Acquisition and Processing
+
+1.  **IR Map:** Shows surface energy (SWIR Band 11).
+2.  **UV Map:** Shows atmospheric and aerosol content (B01 proxy).
+3.  **Red Map:** Shows land cover and vegetation structure (B04).
+
+#### Differential Dynamics and Correlation
+
+The bottom row displays the absolute differential gradient maps. Note that in real data, the gradients are high-magnitude and chaotic due to terrain, small features, and remaining atmospheric noise, resulting in low numerical means.
+
+| Comparison | Mean Integral Value | Interpretation |
+| :--- | :--- | :--- |
+| **UV-IR Mean** | 19.03 | Quantifies the average spatial difference between aerosol dynamics and surface heat/moisture dynamics. |
+| **Red-IR Mean** | 14.32 | Quantifies the average spatial difference between vegetation structure and surface heat/moisture. |
+| **UV-Red Mean**| 15.65 | Quantifies the average spatial difference between aerosol dynamics and vegetation structure. |
+
+<h4 align="center">Real Satellite Data Application Results (UV, IR, Red)</h4>
+<p align="center">
+  <img src="Results/Sat_data_result.png" alt="Real Satellite Data Analysis Results" width="900"/>
 </p>

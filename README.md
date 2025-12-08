@@ -81,8 +81,11 @@ $$\nabla z = \left( \frac{\partial z}{\partial x}, \frac{\partial z}{\partial y}
 
 * **Sobel Operator:** This function uses `cv2.Sobel()` to approximate the discrete partial derivatives ($\partial z / \partial x$ and $\partial z / \partial y$), which is a more robust method for edge detection than simple finite difference, particularly for noisy imagery.
 * **Gradient Magnitude:** The magnitude of the gradient ($M$) for each matrix is calculated using the Pythagorean theorem:
+
     $$M = \sqrt{\left(\frac{\partial z}{\partial x}\right)^2 + \left(\frac{\partial z}{\partial y}\right)^2}$$
+
 * **Differential Dynamics:** The final output is the absolute difference between the two gradient magnitudes, creating a bitmap where high values indicate regions where the spatial patterns diverge:
+
     $$\mathbf{D}_{\text{diff}} = | M_{\mathbf{A}} - M_{\mathbf{B}} |$$
 
 ### 3. Statistical Correlation

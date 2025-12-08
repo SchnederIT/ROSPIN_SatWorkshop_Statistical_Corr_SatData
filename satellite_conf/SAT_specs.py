@@ -1,3 +1,9 @@
+#
+# Primary author: Vatca T.-H.
+# Co-author: Crivcianschi A.
+# Date: December 2025
+#
+
 # --- Common Parameters (Do not change per band) ---
 COMMON_PARAMS = {
     "type": "sentinel-2-l2a", 

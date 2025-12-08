@@ -1,3 +1,8 @@
+#
+# Primary Author: Crivcianschi A.
+# Date: December 2025
+#
+
 import cv2
 import numpy as np
 

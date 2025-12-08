@@ -1,3 +1,8 @@
+#
+# Authors: Crivcianschi A. & Vatca T.-H.
+# Date: December 2025
+#
+
 # Sys includes
 import rasterio
 import numpy as np

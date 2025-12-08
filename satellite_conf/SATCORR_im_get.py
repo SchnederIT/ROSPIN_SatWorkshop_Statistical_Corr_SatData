@@ -1,3 +1,8 @@
+#
+# Primary Author: Vatca T.-H.
+# Date: December 2025
+#
+
 def SATCORR_im_get( oauth, type, bound_box, dimensions, time_begin, time_end, max_cc, input_bands, output_band_count, output_type, sample_manip ):
     
     input_str = "["
